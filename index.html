@@ -1,0 +1,51 @@
+<div id="main-content"></div>
+
+// Get the video container and resize handle elements
+const videoContainer = document.querySelector('.video-container');
+const resizeHandle = videoContainer.querySelector('::before');
+
+// Add event listener for mouse down on the resize handle
+resizeHandle.addEventListener('mousedown', startResize);
+
+function startResize(event) {
+  // Prevent default dragging behavior
+  event.preventDefault();
+
+  // Get initial mouse position and container dimensions
+  const initialX = event.clientX;
+  const initialY = event.clientY;
+  const initialWidth = videoContainer.offsetWidth;
+  const initialHeight = videoContainer.offsetHeight;
+
+  // Add event listeners for mouse move and mouse up
+  document.addEventListener('mousemove', resize);
+  document.addEventListener('mouseup', stopResize);
+
+  function resize(event) {
+    // Calculate new width and height based on mouse movement
+    const deltaX = event.clientX - initialX;
+    const deltaY = event.clientY - initialY;
+    const newWidth = initialWidth + deltaX;
+    const newHeight = initialHeight + deltaY;
+
+    // Update container dimensions
+    videoContainer.style.width = `${newWidth}px`;
+    videoContainer.style.height = `${newHeight}px`;
+  }
+
+  function stopResize() {
+    // Remove event listeners
+    document.removeEventListener('mousemove', resize);
+    document.removeEventListener('mouseup', stopResize);
+  }
+}
+// Load main.html content into the #main-content div
+fetch('main.html')
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById('main-content').innerHTML = html;
+  })
+  .catch(error => {
+    console.error('Error loading main.html:', error);
+  });
+
